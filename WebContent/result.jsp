@@ -34,86 +34,107 @@
                 </tr>
             </thead>
             <tbody>
-                <%@page import="java.io.FileInputStream"%>
-                <%@page import="java.io.FileNotFoundException"%>
-                <%@page import="java.io.IOException"%>
-                <%@page import="java.io.InputStream"%>
-                <%@page import="java.sql.ResultSet"%>
-                <%@page import="java.sql.SQLException"%>
-                <%@page import="java.util.Properties"%>
-                <%@page import="mysql_resource.ConnectionBean"%>
-                <%@page import="mysql_resource.MySqlAction"%>
-                <%@page import="zip_code_db_web_ui.SqlBean"%>
+                <%@page import="zip_code_db_web_ui.TZipCodeController"
+                    import="java.util.List" import="java.util.ArrayList"
+                    import="java.sql.PreparedStatement" import="java.sql.ResultSet"
+                    import="java.sql.SQLException"%>
                 <%
-                    //接続情報の取得
-                    Properties p = new Properties();
-                    InputStream configInput = null;
-
-                    try {
-                        configInput = new FileInputStream("WebContent/WEB-INF/classes/connection.properties");
-                        p.load(configInput);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    ConnectionBean cb = new ConnectionBean();
-                    cb.setDbName(p.getProperty("dbName"));
-                    cb.setPassword(p.getProperty("password"));
-                    cb.setUserName(p.getProperty("userName"));
-
                     //GET リクエストパラメータ取得
                     String zipCode = request.getParameter("zip_code");
                     String prefecture = request.getParameter("prefecture");
                     String city = request.getParameter("city");
                     String area = request.getParameter("area");
 
-                    //DB 接続
-                    MySqlAction msa = new MySqlAction(cb.getConnectionString(), cb.getUserName(), cb.getPassword());
-                    msa.openConnection();
+                    //DB へ接続する。
+                    TZipCodeController tzcc = new TZipCodeController("WebContent/WEB-INF/classes/connection.properties");
+                    tzcc.openConnection();
 
-                    //SQL の組み立て
-                    SqlBean sqlb = new SqlBean();
+                    if (tzcc.getCode() == 1) {
+                        return;
+                    }
+
+                    //SQL を生成する。
+                    List<String> paramList = new ArrayList<String>();
 
                     if (!zipCode.equals("")) {
-                        sqlb.setZipCode(zipCode);
+                        tzcc.setZipCode(zipCode);
+                        paramList.add(zipCode);
                     }
 
                     if (!prefecture.equals("")) {
-                        sqlb.setPrefecture(prefecture);
+                        tzcc.setPrefecture(prefecture);
+                        paramList.add(prefecture);
                     }
 
                     if (!city.equals("")) {
-                        sqlb.setCity(city);
+                        tzcc.setCity(city);
+                        paramList.add(city);
                     }
 
                     if (!area.equals("")) {
-                        sqlb.setArea(area);
+                        tzcc.setArea(area);
+                        paramList.add(area);
                     }
 
-                    String sql = sqlb.getSql();
+                    String sql = tzcc.getSql();
 
-                    //レコードセットの取得
-                    ResultSet rs = msa.getRecordset(sql,
-                            ResultSet.TYPE_FORWARD_ONLY,
-                            ResultSet.CONCUR_READ_ONLY);
+                    //Statement を生成する。
+                    PreparedStatement ps = tzcc.openStatement(sql);
 
-                    //レコードセットを画面へ出力
-                    while (rs.next()) {
-                        out.println("<tr>");
-                        out.println("<td>" + rs.getString("zip_code") + "</td>");
-                        out.println("<td>" + rs.getString("prefecture") + "</td>");
-                        out.println("<td>" + rs.getString("city") + "</td>");
-                        out.println("<td>" + rs.getString("area") + "</td>");
-                        out.println("</tr>");
+                    if (tzcc.getCode() == 1) {
+                        tzcc.closeConnection();
+                        return;
                     }
 
-                    //DB 切断
-                    msa.closeConnection();
+                    //レコードセットを取得する。
+                    ResultSet rs = null;
+                    int i = 0;
+
+                    try {
+                        for (String param : paramList) {
+                            ++i;
+                            ps.setString(i, param);
+                        }
+
+                        rs = ps.executeQuery();
+
+                        //レコードセットを画面へ出力する。
+
+                        i = 0;
+
+                        while (rs.next()) {
+                            ++i;
+                            out.println("<tr>");
+                            out.println("<td>" + rs.getString("zip_code") + "</td>");
+                            out.println("<td>" + rs.getString("prefecture") + "</td>");
+                            out.println("<td>" + rs.getString("city") + "</td>");
+                            out.println("<td>" + rs.getString("area") + "</td>");
+                            out.println("</tr>");
+                        }
+                    } catch (SQLException e) {
+                        System.err.println("エラーが発生しました。 " + e.toString());
+                        return;
+                    } finally {
+                        //DB 接続を切断する。
+                        if (rs != null) {
+                            rs.close();
+                        }
+
+                        tzcc.closeStatement();
+                        tzcc.closeConnection();
+                    }
                 %>
             </tbody>
         </table>
+        <%
+            if (i == 1000) {
+                out.println("<p>該当する住所が 1000 件を超えました。検索範囲を狭めてください。</p>");
+            } else if (i == 0) {
+                out.println("<p>該当する住所は見つかりませんでした。</p>");
+            } else {
+                out.println("<p>" + i + " 件の住所が見つかりました。</p>");
+            }
+        %>
     </section>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
