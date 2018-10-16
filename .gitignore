@@ -54,3 +54,8 @@ local.properties
 /dist/
 /nbdist/
 /.nb-gradle/
+
+### Excel
+*.xls
+*.xlsx
+*.xlsm
