@@ -32,7 +32,6 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('com.h2database:h2')
-	compile 'com.github.JhonnyBravo:mysql-resource:master-SNAPSHOT'
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile ('junit:junit:4.12')
 }
