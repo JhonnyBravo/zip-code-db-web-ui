@@ -1,4 +1,6 @@
-<!doctype html>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <!-- Required meta tags -->
@@ -16,36 +18,12 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-dark bg-dark">
-            <a class="navbar-brand" href="index.html">郵便番号検索</a>
-        </nav>
+        <jsp:include page="template/navbar.jsp" />
     </header>
-
     <section>
-        <form method="get" action="result.jsp">
-            <div class="form-row">
-                <div class="col">
-                    <input type="text" class="form-control" placeholder="郵便番号"
-                        name="zip_code">
-                </div>
-                <div class="col">
-                    <input type="text" class="form-control" placeholder="都道府県"
-                        name="prefecture">
-                </div>
-                <div class="col">
-                    <input type="text" class="form-control" placeholder="市区町村"
-                        name="city">
-                </div>
-                <div class="col">
-                    <input type="text" class="form-control" placeholder="町域"
-                        name="area">
-                </div>
-                <div class="col">
-                    <button type="submit" class="btn btn-primary">検索</button>
-                </div>
-            </div>
-        </form>
+        <jsp:include page="template/search_form.jsp" />
     </section>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
