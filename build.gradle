@@ -50,7 +50,7 @@ dependencies {
     compile "org.apache.tomcat:tomcat-servlet-api:${tomcatVersion}"
     compile "org.apache.tomcat:tomcat-jsp-api:${tomcatVersion}"
 
-    compile 'com.github.JhonnyBravo:mysql-resource:master-SNAPSHOT'
+    compile 'com.github.JhonnyBravo:context-resource:master-SNAPSHOT'
 }
 
 task sourcesJar(type: Jar,dependsOn: classes){
