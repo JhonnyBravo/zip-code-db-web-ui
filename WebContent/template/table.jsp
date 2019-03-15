@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.sql.ResultSet"%>
+<%@ page import="java.util.List, java.util.Iterator, zip_code_db_web_ui.TZipCode"%>
 <table class="table">
     <thead>
         <tr>
@@ -12,27 +12,28 @@
     </thead>
     <tbody>
         <%
-            ResultSet result = (ResultSet) request.getAttribute("result");
-            int i = 0;
+            List<TZipCode>result= (List<TZipCode>) request.getAttribute("result");
+            Iterator<TZipCode> iterator=result.iterator();
 
-            while (result.next()) {
-                ++i;
+            while (iterator.hasNext()) {
+                TZipCode table=iterator.next();
+                
                 out.println("<tr>");
-                out.println("<td>" + result.getString("zip_code") + "</td>");
-                out.println("<td>" + result.getString("prefecture") + "</td>");
-                out.println("<td>" + result.getString("city") + "</td>");
-                out.println("<td>" + result.getString("area") + "</td>");
+                out.println("<td>" + table.getZipCode() + "</td>");
+                out.println("<td>" + table.getPrefecture() + "</td>");
+                out.println("<td>" + table.getCity() + "</td>");
+                out.println("<td>" + table.getArea() + "</td>");
                 out.println("</tr>");
             }
         %>
     </tbody>
 </table>
 <%
-    if (i == 1000) {
+    if (result.size() == 1000) {
         out.println("<p>該当する住所が 1000 件を超えました。検索範囲を狭めてください。</p>");
-    } else if (i == 0) {
+    } else if (result.size() == 0) {
         out.println("<p>該当する住所は見つかりませんでした。</p>");
     } else {
-        out.println("<p>" + i + " 件の住所が見つかりました。</p>");
+        out.println("<p>" + result.size() + " 件の住所が見つかりました。</p>");
     }
 %>
