@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  * 検索用住所データを保持するテーブル。
  */
 @Entity
-@Table(name = "ZipCode")
+@Table(name = "t_zip_code")
 public class ZipCode {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,16 +20,16 @@ public class ZipCode {
     @NotNull
     private Long id;
 
-    @Column(length = 7, nullable = false)
+    @Column(name = "zip_code", length = 7, nullable = false)
     private String zipCode;
 
-    @Column(length = 10, nullable = false)
+    @Column(name = "prefecture", length = 10, nullable = false)
     private String prefecture;
 
-    @Column(length = 20, nullable = false)
+    @Column(name = "city", length = 20, nullable = false)
     private String city;
 
-    @Column(length = 100, nullable = true)
+    @Column(name = "area", length = 100, nullable = true)
     private String area;
 
     /**
