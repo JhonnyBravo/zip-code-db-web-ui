@@ -40,6 +40,10 @@
                 </tr>
             </tbody>
         </table>
+        
+        <p th:if="${#lists.size(result)} == 0" th:text="該当する住所が見つかりませんでした。"></p>
+        <p th:if="${#lists.size(result)} == 1000">該当する住所が 1000 件を超えました。検索範囲を狭めてください。</p>
+        <p th:if="${#lists.size(result)} > 0 and ${#lists.size(result)} < 1000" th:text="${#lists.size(result)}+' 件の住所が見つかりました。'"></p>
     </section>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
