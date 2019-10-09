@@ -43,49 +43,21 @@ public class ZipCodeController {
     /**
      * @param request HttpServletRequest を受取る。
      * @param mav     ModelAndView を受取る。
-     * @return ModelAndView POST 送信時にパラメータが指定されていない場合は index.html へリダイレクトし、
-     *         パラメータが指定されている場合は search.html を返す。
+     * @return ModelAndView レコード検索を実行し、その結果を search.html へ渡してページ遷移させる。
      */
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public ModelAndView postSearchPage(HttpServletRequest request, ModelAndView mav) {
-        final String zipCode = request.getParameter("zipCode");
-        final String prefecture = request.getParameter("prefecture");
-        final String city = request.getParameter("city");
-        final String area = request.getParameter("area");
+        final ZipCode zipCode = new ZipCode();
 
-        if (zipCode.isEmpty() && prefecture.isEmpty() && city.isEmpty() && area.isEmpty()) {
-            mav = new ModelAndView("redirect:/");
-            return mav;
-        }
+        zipCode.setZipCode(request.getParameter("zipCode"));
+        zipCode.setPrefecture(request.getParameter("prefecture"));
+        zipCode.setCity(request.getParameter("city"));
+        zipCode.setArea(request.getParameter("area"));
 
-        if (!zipCode.isEmpty()) {
-            final List<ZipCode> result = repository.findByZipCode(zipCode);
-            mav.addObject("result", result);
-        } else if (!prefecture.isEmpty() && !city.isEmpty() && !area.isEmpty()) {
-            final List<ZipCode> result = repository.findByPrefectureAndCityLikeAndAreaLike(prefecture, city, area);
-            mav.addObject("result", result);
-        } else if (!prefecture.isEmpty() && !city.isEmpty() && area.isEmpty()) {
-            final List<ZipCode> result = repository.findByPrefectureAndCityLike(prefecture, city);
-            mav.addObject("result", result);
-        } else if (!prefecture.isEmpty() && city.isEmpty() && !area.isEmpty()) {
-            final List<ZipCode> result = repository.findByPrefectureAndAreaLike(prefecture, area);
-            mav.addObject("result", result);
-        } else if (prefecture.isEmpty() && !city.isEmpty() && !area.isEmpty()) {
-            final List<ZipCode> result = repository.findByCityLikeAndAreaLike(city, area);
-            mav.addObject("result", result);
-        } else if (!prefecture.isEmpty() && city.isEmpty() && area.isEmpty()) {
-            final List<ZipCode> result = repository.findByPrefecture(prefecture);
-            mav.addObject("result", result);
-        } else if (prefecture.isEmpty() && !city.isEmpty() && area.isEmpty()) {
-            final List<ZipCode> result = repository.findByCityLike(city);
-            mav.addObject("result", result);
-        } else if (prefecture.isEmpty() && city.isEmpty() && !area.isEmpty()) {
-            final List<ZipCode> result = repository.findByAreaLike(area);
-            mav.addObject("result", result);
-        }
+        final List<ZipCode> result = repository.find(zipCode);
 
+        mav.addObject("result", result);
         mav.setViewName("search");
         return mav;
     }
-
 }
