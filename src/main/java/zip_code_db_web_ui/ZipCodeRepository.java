@@ -1,65 +1,87 @@
 package zip_code_db_web_ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 /**
  * レコード検索用メソッドを管理する。
  */
 @Repository
-public interface ZipCodeRepository extends JpaRepository<ZipCode, Long> {
-    /**
-     * @param zipCode 検索対象とする郵便番号を指定する。
-     * @return List&lt;ZipCode&gt; 検索結果を返す。
-     */
-    public List<ZipCode> findByZipCode(String zipCode);
+public class ZipCodeRepository {
+    @Autowired
+    private NamedParameterJdbcTemplate template;
 
     /**
-     * @param prefecture 検索対象とする都道府県名を指定する。
-     * @return List&lt;ZipCode&gt; 検索結果を返す。
+     * @param model パラメータとして渡す ZipCode オブジェクトを指定する。
+     * @return 動的に生成された SQL 文を返す。
      */
-    public List<ZipCode> findByPrefecture(String prefecture);
+    private String getSql(ZipCode model) {
+        final List<String> conditions = new ArrayList<String>();
+        final StringBuilder buffer = new StringBuilder();
+
+        buffer.append("SELECT * FROM t_zip_code");
+
+        if (!model.getZipCode().isEmpty()) {
+            buffer.append(" WHERE zip_code = :zip_code");
+        } else if (!model.getPrefecture().isEmpty() || !model.getCity().isEmpty() || !model.getArea().isEmpty()) {
+            if (!model.getPrefecture().isEmpty()) {
+                conditions.add("prefecture = :prefecture");
+            }
+
+            if (!model.getCity().isEmpty()) {
+                conditions.add("city LIKE :city");
+            }
+
+            if (!model.getArea().isEmpty()) {
+                conditions.add("area LIKE :area");
+            }
+
+            final String expr = String.join(" AND ", conditions);
+            buffer.append(" WHERE ");
+            buffer.append(expr);
+        }
+
+        buffer.append(" LIMIT 1000;");
+
+        final String sql = new String(buffer);
+        return sql;
+    }
 
     /**
-     * @param city 検索対象とする市区町村名を指定する。
-     * @return List&lt;ZipCode&gt; 検索結果を返す。
+     * レコード検索を実行する。
+     * 
+     * @param model パラメータとして渡す ZipCode オブジェクトを指定する。
+     * @return recordset レコードの検索結果をリストに格納して返す。
      */
-    public List<ZipCode> findByCityLike(String city);
+    public List<ZipCode> find(ZipCode model) {
+        final String sql = getSql(model);
+        final MapSqlParameterSource params = new MapSqlParameterSource();
 
-    /**
-     * @param area 検索対象とする町域名を指定する。
-     * @return List&lt;ZipCode&gt; 検索結果を返す。
-     */
-    public List<ZipCode> findByAreaLike(String area);
+        if (!model.getZipCode().isEmpty()) {
+            params.addValue("zip_code", model.getZipCode());
+        } else if (!model.getPrefecture().isEmpty() || !model.getCity().isEmpty() || !model.getArea().isEmpty()) {
+            if (!model.getPrefecture().isEmpty()) {
+                params.addValue("prefecture", model.getPrefecture());
+            }
 
-    /**
-     * @param prefecture 検索対象とする都道府県名を指定する。
-     * @param city       検索対象とする市区町村名を指定する。
-     * @param area       検索対象とする町域名を指定する。
-     * @return List&lt;ZipCode&gt; 検索結果を返す。
-     */
-    public List<ZipCode> findByPrefectureAndCityLikeAndAreaLike(String prefecture, String city, String area);
+            if (!model.getCity().isEmpty()) {
+                params.addValue("city", model.getCity());
+            }
 
-    /**
-     * @param prefecture 検索対象とする都道府県名を指定する。
-     * @param city       検索対象とする市区町村名を指定する。
-     * @return List&lt;ZipCode&gt; 検索結果を返す。
-     */
-    public List<ZipCode> findByPrefectureAndCityLike(String prefecture, String city);
+            if (!model.getArea().isEmpty()) {
+                params.addValue("area", model.getArea());
+            }
+        }
 
-    /**
-     * @param prefecture 検索対象とする都道府県名を指定する。
-     * @param area       検索対象とする町域名を指定する。
-     * @return List&lt;ZipCode&gt; 検索結果を返す。
-     */
-    public List<ZipCode> findByPrefectureAndAreaLike(String prefecture, String area);
-
-    /**
-     * @param city 検索対象とする市区町村名を指定する。
-     * @param area 検索対象とする町域名を指定する。
-     * @return List&lt;ZipCode&gt; 検索結果を返す。
-     */
-    public List<ZipCode> findByCityLikeAndAreaLike(String city, String area);
+        final RowMapper<ZipCode> mapper = new BeanPropertyRowMapper<ZipCode>(ZipCode.class);
+        final List<ZipCode> recordset = template.query(sql, params, mapper);
+        return recordset;
+    }
 }
