@@ -86,11 +86,21 @@ project.webAppDirName = 'WebContent'
 sourceSets {
     main {
         java {
-            srcDir 'src'
+            srcDir 'src/main/java'
         }
 
         resources {
-            srcDir 'src'
+            srcDir 'src/main/resources'
+        }
+    }
+    
+    test {
+        java {
+            srcDir 'src/test/java'
+        }
+
+        resources {
+            srcDir 'src/test/resources'
         }
     }
 }
