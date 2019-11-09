@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, zip_code_db_cli.ZipCode"%>
+<%@ page import="java.util.List, zip_code_db_cli.domain.model.ZipCode"%>
 <table class="table">
     <thead>
         <tr>
