@@ -6,9 +6,38 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import zip_code_db_cli.domain.model.ZipCode;
 
 public class ZipCodeRepositoryImpl implements ZipCodeRepository {
+    private final Logger logger;
+
+    public ZipCodeRepositoryImpl() {
+        logger = LoggerFactory.getLogger(getClass());
+    }
+
+    /**
+     * 文字列が null または空文字であるかどうかを確認する。
+     *
+     * @param value チェック対象とする文字列を指定する。
+     * @return result
+     *         <ul>
+     *         <li>true: 文字列が null または空文字であることを表す。</li>
+     *         <li>false: 文字列が null でも空文字でもないことを表す。</li>
+     *         </ul>
+     */
+    private boolean isEmpty(String value) {
+        boolean result = false;
+
+        if (value == null || value.isEmpty()) {
+            result = true;
+        }
+
+        return result;
+    }
+
     @Override
     public String getSql(ZipCode zipcode) {
         final List<String> conditions = new ArrayList<>();
@@ -16,18 +45,18 @@ public class ZipCodeRepositoryImpl implements ZipCodeRepository {
 
         buffer.append("SELECT * FROM t_zip_code");
 
-        if (!zipcode.getZipCode().isEmpty()) {
+        if (!isEmpty(zipcode.getZipCode())) {
             buffer.append(" WHERE zip_code=?");
-        } else if (!zipcode.getPrefecture().isEmpty() || !zipcode.getCity().isEmpty() || !zipcode.getArea().isEmpty()) {
-            if (!zipcode.getPrefecture().isEmpty()) {
+        } else if (!isEmpty(zipcode.getPrefecture()) || !isEmpty(zipcode.getCity()) || !isEmpty(zipcode.getArea())) {
+            if (!isEmpty(zipcode.getPrefecture())) {
                 conditions.add("prefecture=?");
             }
 
-            if (!zipcode.getCity().isEmpty()) {
+            if (!isEmpty(zipcode.getCity())) {
                 conditions.add("city LIKE ?");
             }
 
-            if (!zipcode.getArea().isEmpty()) {
+            if (!isEmpty(zipcode.getArea())) {
                 conditions.add("area LIKE ?");
             }
 
@@ -38,7 +67,10 @@ public class ZipCodeRepositoryImpl implements ZipCodeRepository {
 
         buffer.append(" LIMIT 1000;");
 
+        logger.info("SQL を生成しています......");
         final String sql = new String(buffer);
+
+        logger.info(sql);
         return sql;
     }
 
@@ -48,21 +80,21 @@ public class ZipCodeRepositoryImpl implements ZipCodeRepository {
         ResultSet resultset = null;
 
         try (PreparedStatement query = connection.prepareStatement(getSql(zipcode))) {
-            if (!zipcode.getZipCode().isEmpty()) {
+            if (!isEmpty(zipcode.getZipCode())) {
                 query.setString(1, zipcode.getZipCode());
-            } else if (!zipcode.getPrefecture().isEmpty() || !zipcode.getCity().isEmpty()
-                    || !zipcode.getArea().isEmpty()) {
+            } else if (!isEmpty(zipcode.getPrefecture()) || !isEmpty(zipcode.getCity())
+                    || !isEmpty(zipcode.getArea())) {
                 final List<String> values = new ArrayList<>();
 
-                if (!zipcode.getPrefecture().isEmpty()) {
+                if (!isEmpty(zipcode.getPrefecture())) {
                     values.add(zipcode.getPrefecture());
                 }
 
-                if (!zipcode.getCity().isEmpty()) {
+                if (!isEmpty(zipcode.getCity())) {
                     values.add(zipcode.getCity());
                 }
 
-                if (!zipcode.getArea().isEmpty()) {
+                if (!isEmpty(zipcode.getArea())) {
                     values.add(zipcode.getArea());
                 }
 
@@ -74,6 +106,7 @@ public class ZipCodeRepositoryImpl implements ZipCodeRepository {
                 }
             }
 
+            logger.info("レコードを検索しています......");
             resultset = query.executeQuery();
 
             while (resultset.next()) {
@@ -96,6 +129,8 @@ public class ZipCodeRepositoryImpl implements ZipCodeRepository {
 
                 recordset.add(record);
             }
+
+            logger.info(recordset.size() + " 件のレコードを取得しました。");
         } finally {
             if (resultset != null) {
                 resultset.close();
