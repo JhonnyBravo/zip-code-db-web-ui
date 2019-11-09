@@ -1,4 +1,4 @@
-package filter;
+package zip_code_db_web_ui.app.filter;
 
 import java.io.IOException;
 
