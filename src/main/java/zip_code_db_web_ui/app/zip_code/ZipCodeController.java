@@ -12,13 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java_itamae_connection.domain.model.ConnectionInfo;
-import java_itamae_connection.domain.service.connection_info.ConnectionInfoService;
-import java_itamae_connection.domain.service.connection_info.ConnectionInfoServiceImpl;
-import java_itamae_contents.domain.model.ContentsAttribute;
 import zip_code_db_cli.domain.model.ZipCode;
 import zip_code_db_web_ui.domain.service.zip_code.ZipCodeService;
-import zip_code_db_web_ui.domain.service.zip_code.ZipCodeServiceImpl;
 
 /**
  * 住所検索ページのコントローラ
@@ -27,15 +22,17 @@ import zip_code_db_web_ui.domain.service.zip_code.ZipCodeServiceImpl;
 public class ZipCodeController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    private final ConnectionInfoService cis;
-    private ZipCodeService zcs;
+    private final ZipCodeHelper helper;
+    private final ZipCodeService service;
 
     /**
      * @see HttpServlet#HttpServlet()
+     * @throws Exception {@link java.lang.Exception}
      */
-    public ZipCodeController() {
+    public ZipCodeController() throws Exception {
         super();
-        cis = new ConnectionInfoServiceImpl();
+        helper = new ZipCodeHelper();
+        service = helper.getZipCodeService("WebContent/WEB-INF/classes/connection.properties");
     }
 
     /**
@@ -57,23 +54,11 @@ public class ZipCodeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        final ZipCode form = new ZipCode();
-
-        form.setZipCode(request.getParameter("zip_code"));
-        form.setPrefecture(request.getParameter("prefecture"));
-        form.setCity(request.getParameter("city"));
-        form.setArea(request.getParameter("area"));
-
-        final ContentsAttribute attr = new ContentsAttribute();
-        attr.setPath("WebContent/WEB-INF/classes/connection.properties");
-
-        ConnectionInfo cnInfo = new ConnectionInfo();
+        final ZipCode form = helper.convertToZipCode(request);
         List<ZipCode> recordset = new ArrayList<>();
 
         try {
-            cnInfo = cis.getConnectionInfo(attr);
-            zcs = new ZipCodeServiceImpl(cnInfo);
-            recordset = zcs.find(form);
+            recordset = service.find(form);
             request.setAttribute("recordset", recordset);
         } catch (final Exception e) {
             throw new IOException(e);
