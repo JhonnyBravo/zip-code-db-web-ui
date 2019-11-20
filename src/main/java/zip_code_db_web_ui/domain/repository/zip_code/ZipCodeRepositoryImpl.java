@@ -65,8 +65,6 @@ public class ZipCodeRepositoryImpl implements ZipCodeRepository {
             buffer.append(expr);
         }
 
-        buffer.append(" LIMIT 1000;");
-
         logger.info("SQL を生成しています......");
         final String sql = new String(buffer);
 
