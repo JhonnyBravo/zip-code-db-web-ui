@@ -69,6 +69,7 @@ public class SearchAddressController extends HttpServlet {
 
         try {
             recordset = service.find(form);
+            request.setAttribute("recordset", recordset);
 
             if (recordset.size() > 1000) {
                 request.setAttribute("error", "該当する住所が 1000 件を超えました。検索範囲を狭めてください。");
@@ -82,8 +83,6 @@ public class SearchAddressController extends HttpServlet {
 
                 final RequestDispatcher dispatcher = context.getRequestDispatcher("/home");
                 dispatcher.forward(request, response);
-            } else {
-                request.setAttribute("recordset", recordset);
             }
         } catch (final Exception e) {
             throw new IOException(e);
