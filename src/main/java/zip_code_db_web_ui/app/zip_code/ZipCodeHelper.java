@@ -7,6 +7,8 @@ import java_itamae_connection.domain.service.connection_info.ConnectionInfoServi
 import java_itamae_connection.domain.service.connection_info.ConnectionInfoServiceImpl;
 import java_itamae_contents.domain.model.ContentsAttribute;
 import zip_code_db_cli.domain.model.ZipCode;
+import zip_code_db_web_ui.domain.service.prefectures.PrefecturesService;
+import zip_code_db_web_ui.domain.service.prefectures.PrefecturesServiceImpl;
 import zip_code_db_web_ui.domain.service.zip_code.ZipCodeService;
 import zip_code_db_web_ui.domain.service.zip_code.ZipCodeServiceImpl;
 
@@ -31,6 +33,16 @@ public class ZipCodeHelper {
 
         final ConnectionInfo connectionInfo = cis.getConnectionInfo(attr);
         return connectionInfo;
+    }
+
+    /**
+     * @param path DB の接続情報を記述した設定ファイルのパスを指定する。
+     * @return prefectureService PrefectureService を返す。
+     * @throws Exception {@link java.lang.Exception}
+     */
+    public PrefecturesService getPrefecturesService(String path) throws Exception {
+        final PrefecturesService ps = new PrefecturesServiceImpl(getConnectionInfo(path));
+        return ps;
     }
 
     /**
