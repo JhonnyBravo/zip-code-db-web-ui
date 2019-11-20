@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, zip_code_db_cli.domain.model.ZipCode"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
 <table class="table">
     <thead>
         <tr>
@@ -11,26 +14,14 @@
         </tr>
     </thead>
     <tbody>
-        <%
-            List<ZipCode> recordset = (List<ZipCode>) request.getAttribute("recordset");
-
-            for (ZipCode record : recordset) {
-                out.println("<tr>");
-                out.println("<td>" + record.getZipCode() + "</td>");
-                out.println("<td>" + record.getPrefecture() + "</td>");
-                out.println("<td>" + record.getCity() + "</td>");
-                out.println("<td>" + record.getArea() + "</td>");
-                out.println("</tr>");
-            }
-        %>
+        <c:forEach var="record" items="${recordset}">
+            <tr>
+                <td>${record.zipCode}</td>
+                <td>${record.prefecture}</td>
+                <td>${record.city}</td>
+                <td>${record.area}</td>
+            </tr>
+        </c:forEach>
     </tbody>
 </table>
-<%
-    if (recordset.size() == 1000) {
-        out.println("<p>該当する住所が 1000 件を超えました。検索範囲を狭めてください。</p>");
-    } else if (recordset.size() > 0) {
-        out.println("<p>" + recordset.size() + " 件の住所が見つかりました。</p>");
-    } else {
-        out.println("<p>該当する住所が見つかりませんでした。</p>");
-    }
-%>
+<p>${fn:length(recordset)} 件の住所が見つかりました。</p>
