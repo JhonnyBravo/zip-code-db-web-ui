@@ -1,7 +1,6 @@
 package zip_code_db_web_ui.app.zip_code;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -13,17 +12,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import zip_code_db_cli.domain.model.ZipCode;
-import zip_code_db_web_ui.domain.service.zip_code.ZipCodeService;
+import zip_code_db_web_ui.domain.model.Prefecture;
+import zip_code_db_web_ui.domain.service.prefectures.PrefecturesService;
 
 /**
- * 住所検索ページのコントローラ
+ * 住所検索フォームのコントローラ
  */
-@WebServlet("/search")
+@WebServlet("/home")
 public class ZipCodeController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private final ZipCodeHelper helper;
-    private final ZipCodeService service;
+    private final PrefecturesService service;
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -32,20 +32,14 @@ public class ZipCodeController extends HttpServlet {
     public ZipCodeController() throws Exception {
         super();
         helper = new ZipCodeHelper();
-        service = helper.getZipCodeService("WebContent/WEB-INF/classes/connection.properties");
+        service = helper.getPrefecturesService("WebContent/WEB-INF/classes/connection.properties");
     }
 
     /**
-     * 住所検索を実行する
+     * 住所検索フォームを表示する。
      *
-     * @param request  下記のリクエストパラメータを受け取る。
-     *                 <ul>
-     *                 <li>zip_code: 検索対象とする郵便番号を指定する。</li>
-     *                 <li>prefecture: 検索対象とする都道府県名を指定する。</li>
-     *                 <li>city: 検索対象とする市区郡名を指定する。</li>
-     *                 <li>area: 検索対象とする町域名を指定する。</li>
-     *                 </ul>
-     * @param response 検索結果を表示ページへ転送する。
+     * @param request  {@link javax.servlet.http.HttpServletRequest}
+     * @param response 住所検索フォームを表示する。
      * @throws ServletException {@link javax.servlet.ServletException}
      * @throws IOException      {@link java.io.IOException}
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -54,18 +48,22 @@ public class ZipCodeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        final ZipCode form = helper.convertToZipCode(request);
-        List<ZipCode> recordset = new ArrayList<>();
+        String prefecture = null;
+        final ZipCode form = (ZipCode) request.getAttribute("form");
+
+        if (form != null) {
+            prefecture = form.getPrefecture();
+        }
 
         try {
-            recordset = service.find(form);
-            request.setAttribute("recordset", recordset);
+            final List<Prefecture> prefectures = service.getPrefectures(prefecture);
+            request.setAttribute("prefectures", prefectures);
         } catch (final Exception e) {
             throw new IOException(e);
         }
 
         final ServletContext context = getServletContext();
-        final RequestDispatcher dispatcher = context.getRequestDispatcher("/search_result.jsp");
+        final RequestDispatcher dispatcher = context.getRequestDispatcher("/index.jsp");
         dispatcher.include(request, response);
     }
 }
