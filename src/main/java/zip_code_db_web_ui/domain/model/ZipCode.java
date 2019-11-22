@@ -1,4 +1,6 @@
-package zip_code_db_web_ui;
+package zip_code_db_web_ui.domain.model;
+
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +15,9 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "t_zip_code")
-public class ZipCode {
+public class ZipCode implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
