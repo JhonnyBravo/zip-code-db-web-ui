@@ -1,4 +1,4 @@
-package zip_code_db_web_ui;
+package zip_code_db_web_ui.app.zip_code;
 
 import java.util.List;
 
@@ -11,18 +11,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import zip_code_db_web_ui.domain.model.ZipCode;
+import zip_code_db_web_ui.domain.service.zip_code.ZipCodeService;
+
 /**
- * ルーティングとリクエストを管理する。
+ * 住所検索サービスを管理する。
  */
 @Controller
 public class ZipCodeController {
     @Autowired
-    ZipCodeRepository repository;
+    ZipCodeService service;
+    @Autowired
+    ZipCodeHelper helper;
 
     /**
-     * @param zipCode ZipCode エンティティを受取る。
-     * @param mav     ModelAndView を受取る。
-     * @return ModelAndView index.html を返す。
+     * 検索フォームを表示する。
+     *
+     * @param zipcode 検索フォームから送信されたフォームオブジェクトを受け取る。
+     * @param mav     {@link org.springframework.web.servlet.ModelAndView}
+     * @return view index.html
      */
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(@ModelAttribute("formModel") ZipCode zipcode, ModelAndView mav) {
@@ -31,8 +38,10 @@ public class ZipCodeController {
     }
 
     /**
-     * @param mav ModelAndView を受取る。
-     * @return ModelAndView index.html を返す。
+     * 検索フォームへ転送する。
+     *
+     * @param mav {@link org.springframework.web.servlet.ModelAndView}
+     * @return view index.html
      */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ModelAndView getSearchPage(ModelAndView mav) {
@@ -41,20 +50,15 @@ public class ZipCodeController {
     }
 
     /**
-     * @param request HttpServletRequest を受取る。
-     * @param mav     ModelAndView を受取る。
-     * @return ModelAndView レコード検索を実行し、その結果を search.html へ渡してページ遷移させる。
+     * 住所検索を実行し、検索結果をテーブル表示する。
+     * 
+     * @param request 検索フォームから送信された POST リクエストを受け取る。
+     * @param mav     {@link org.springframework.web.servlet.ModelAndView}
+     * @return view search.html
      */
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public ModelAndView postSearchPage(HttpServletRequest request, ModelAndView mav) {
-        final ZipCode zipCode = new ZipCode();
-
-        zipCode.setZipCode(request.getParameter("zipCode"));
-        zipCode.setPrefecture(request.getParameter("prefecture"));
-        zipCode.setCity(request.getParameter("city"));
-        zipCode.setArea(request.getParameter("area"));
-
-        final List<ZipCode> result = repository.find(zipCode);
+        final List<ZipCode> result = service.find(helper.convertToZipCode(request));
 
         mav.addObject("result", result);
         mav.setViewName("search");
