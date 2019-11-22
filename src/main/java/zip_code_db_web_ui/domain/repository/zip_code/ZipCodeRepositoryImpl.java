@@ -1,4 +1,4 @@
-package zip_code_db_web_ui;
+package zip_code_db_web_ui.domain.repository.zip_code;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,19 +10,18 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import zip_code_db_web_ui.domain.model.ZipCode;
+
 /**
  * レコード検索用メソッドを管理する。
  */
 @Repository
-public class ZipCodeRepository {
+public class ZipCodeRepositoryImpl implements ZipCodeRepository {
     @Autowired
     private NamedParameterJdbcTemplate template;
 
-    /**
-     * @param model パラメータとして渡す ZipCode オブジェクトを指定する。
-     * @return 動的に生成された SQL 文を返す。
-     */
-    private String getSql(ZipCode model) {
+    @Override
+    public String getSql(ZipCode model) {
         final List<String> conditions = new ArrayList<String>();
         final StringBuilder buffer = new StringBuilder();
 
@@ -54,12 +53,7 @@ public class ZipCodeRepository {
         return sql;
     }
 
-    /**
-     * レコード検索を実行する。
-     * 
-     * @param model パラメータとして渡す ZipCode オブジェクトを指定する。
-     * @return recordset レコードの検索結果をリストに格納して返す。
-     */
+    @Override
     public List<ZipCode> find(ZipCode model) {
         final String sql = getSql(model);
         final MapSqlParameterSource params = new MapSqlParameterSource();
