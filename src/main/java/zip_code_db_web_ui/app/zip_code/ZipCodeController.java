@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import zip_code_db_cli.domain.model.ZipCode;
 import zip_code_db_web_ui.domain.model.Prefecture;
 import zip_code_db_web_ui.domain.service.prefectures.PrefecturesService;
 
@@ -49,7 +48,7 @@ public class ZipCodeController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String prefecture = null;
-        final ZipCode form = (ZipCode) request.getAttribute("form");
+        final ZipCodeForm form = (ZipCodeForm) request.getAttribute("form");
 
         if (form != null) {
             prefecture = form.getPrefecture();
