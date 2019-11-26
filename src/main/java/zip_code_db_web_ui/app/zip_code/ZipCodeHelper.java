@@ -56,6 +56,23 @@ public class ZipCodeHelper {
     }
 
     /**
+     * 住所検索ページから送信されたリクエストパラメータを受け取り、 ZipCodeForm に変換して返す。
+     *
+     * @param request 住所検索ページから送信されたリクエストを受け取る。
+     * @return form ZipCodeForm を返す。
+     */
+    public ZipCodeForm convertToZipCodeForm(HttpServletRequest request) {
+        final ZipCodeForm form = new ZipCodeForm();
+
+        form.setZipCode(request.getParameter("zip_code"));
+        form.setPrefecture(request.getParameter("prefecture"));
+        form.setCity(request.getParameter("city"));
+        form.setArea(request.getParameter("area"));
+
+        return form;
+    }
+
+    /**
      * 住所検索ページから送信されたリクエストパラメータを受け取り、 ZipCode に変換して返す。
      *
      * @param request 住所検索ページから送信されたリクエストを受け取る。
