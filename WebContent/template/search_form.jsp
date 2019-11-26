@@ -9,6 +9,9 @@
         <div class="col">
             <input type="text" class="form-control" placeholder="郵便番号"
                 name="zip_code" value="${form.zipCode}">
+            <c:if test="${zipCodeError!=null}">
+                <p>${zipCodeError}</p>
+            </c:if>
         </div>
         <div class="col">
             <select class="form-control" name="prefecture">
@@ -28,10 +31,16 @@
         <div class="col">
             <input type="text" class="form-control" placeholder="市区町村"
                 name="city" value="${form.city}">
+            <c:if test="${cityError!=null}">
+                <p>${cityError}</p>
+            </c:if>
         </div>
         <div class="col">
             <input type="text" class="form-control" placeholder="町域"
                 name="area" value="${form.area}">
+            <c:if test="${areaError!=null}">
+                <p>${areaError}</p>
+            </c:if>
         </div>
         <div class="col">
             <button type="submit" class="btn btn-primary">検索</button>
@@ -40,4 +49,7 @@
 </form>
 <c:if test="${error!=null}">
     <p>${error}</p>
+</c:if>
+<c:if test="${conditionsError!=null}">
+    <p>${conditionsError}</p>
 </c:if>
