@@ -3,6 +3,7 @@ package zip_code_db_web_ui.app.zip_code;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -11,6 +12,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 import zip_code_db_cli.domain.model.ZipCode;
 import zip_code_db_web_ui.domain.service.zip_code.ZipCodeService;
@@ -54,35 +58,47 @@ public class SearchAddressController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        final ZipCode form = helper.convertToZipCode(request);
+        final ZipCodeForm form = helper.convertToZipCodeForm(request);
+        request.setAttribute("form", form);
+
+        final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        final Set<ConstraintViolation<ZipCodeForm>> validResult = validator.validate(form);
+
         final ServletContext context = getServletContext();
 
-        if (form.getZipCode().isEmpty() && form.getPrefecture().isEmpty() && form.getCity().isEmpty()
-                && form.getArea().isEmpty()) {
-            request.setAttribute("error", "検索条件を指定してください。");
+        if (validResult.size() > 0) {
+            validResult.stream().forEach(e -> {
+                final String path = e.getPropertyPath().toString() + "Error";
+                final String message = e.getMessage();
+
+                request.setAttribute(path, message);
+            });
 
             final RequestDispatcher dispatcher = context.getRequestDispatcher("/home");
             dispatcher.forward(request, response);
+            return;
         }
 
         List<ZipCode> recordset = new ArrayList<>();
+        final ZipCode zipcode = helper.convertToZipCode(request);
+
+        String error = null;
 
         try {
-            recordset = service.find(form);
+            recordset = service.find(zipcode);
             request.setAttribute("recordset", recordset);
 
             if (recordset.size() > 1000) {
-                request.setAttribute("error", "該当する住所が 1000 件を超えました。検索範囲を狭めてください。");
-                request.setAttribute("form", form);
-
-                final RequestDispatcher dispatcher = context.getRequestDispatcher("/home");
-                dispatcher.forward(request, response);
+                error = "該当する住所が 1000 件を超えました。検索範囲を狭めてください。";
             } else if (recordset.size() == 0) {
-                request.setAttribute("error", "該当する住所が見つかりませんでした。");
-                request.setAttribute("form", form);
+                error = "該当する住所が見つかりませんでした。";
+            }
 
+            if (error != null) {
                 final RequestDispatcher dispatcher = context.getRequestDispatcher("/home");
+                request.setAttribute("error", error);
                 dispatcher.forward(request, response);
+                return;
             }
         } catch (final Exception e) {
             throw new IOException(e);
