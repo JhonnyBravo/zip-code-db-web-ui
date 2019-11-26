@@ -82,7 +82,13 @@ public class ZipCodeController {
             return index(form);
         }
 
-        final List<ZipCode> result = service.find(form);
+        final ZipCode zipcode = new ZipCode();
+        zipcode.setZipCode(form.getZipCode());
+        zipcode.setPrefecture(form.getPrefecture());
+        zipcode.setCity(form.getCity());
+        zipcode.setArea(form.getArea());
+
+        final List<ZipCode> result = service.find(zipcode);
         model.addAttribute("result", result);
 
         if (result.size() == 0) {
