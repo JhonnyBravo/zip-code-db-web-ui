@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- t_zip_code からレコードを取得する。 -->
+<mapper namespace="zip_code_db_web_ui.domain.repository.zip_code.ZipCodeRepository">
+    <resultMap id="zipcode" type="zip_code_db_cli.domain.model.ZipCode">
+        <id property="id" column="id" />
+        <result property="jisCode" column="jis_code" />
+        <result property="zipCode" column="zip_code" />
+        <result property="prefecturePhonetic" column="prefecture_phonetic" />
+        <result property="cityPhonetic" column="city_phonetic" />
+        <result property="areaPhonetic" column="area_phonetic" />
+        <result property="prefecture" column="prefecture" />
+        <result property="city" column="city" />
+        <result property="area" column="area" />
+        <result property="updateFlag" column="update_flag" />
+        <result property="reasonFlag" column="reason_flag" />
+    </resultMap>
+    <!-- 検索条件を動的に変更してレコードを取得する。 -->
+    <select id="find" parameterType="zip_code_db_cli.domain.model.ZipCode"
+        resultMap="zipcode">
+        SELECT * FROM t_zip_code
+        <choose>
+            <when test="ZipCode.zipCode != null and ZipCode.zipCode != ''">
+                WHERE zip_code = #{ZipCode.zipCode}
+            </when>
+            <when test="ZipCode.zipCode == null or ZipCode.zipCode == ''">
+                <where>
+                    <if test="ZipCode.prefecture != null and ZipCode.prefecture != ''">
+                        prefecture = #{ZipCode.prefecture}
+                    </if>
+                    <if test="ZipCode.city != null and ZipCode.city != ''">
+                        AND city LIKE #{ZipCode.city}
+                    </if>
+                    <if test="ZipCode.area != null and ZipCode.area != ''">
+                        AND area LIKE #{ZipCode.area}
+                    </if>
+                </where>
+            </when>
+        </choose>
+        ;
+    </select>
+    <!-- 都道府県名の一覧を取得する。 -->
+    <select id="findPrefectureAll" resultType="String">
+        SELECT DISTINCT prefecture FROM t_zip_code
+        ORDER BY prefecture_phonetic;
+    </select>
+</mapper>
