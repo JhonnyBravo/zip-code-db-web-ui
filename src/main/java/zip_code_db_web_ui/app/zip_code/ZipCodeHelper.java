@@ -1,64 +1,22 @@
 package zip_code_db_web_ui.app.zip_code;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
-import java_itamae_connection.domain.model.ConnectionInfo;
-import java_itamae_connection.domain.service.connection_info.ConnectionInfoService;
-import java_itamae_connection.domain.service.connection_info.ConnectionInfoServiceImpl;
-import java_itamae_contents.domain.model.ContentsAttribute;
 import zip_code_db_cli.domain.model.ZipCode;
-import zip_code_db_web_ui.domain.service.prefectures.PrefecturesService;
-import zip_code_db_web_ui.domain.service.prefectures.PrefecturesServiceImpl;
-import zip_code_db_web_ui.domain.service.zip_code.ZipCodeService;
-import zip_code_db_web_ui.domain.service.zip_code.ZipCodeServiceImpl;
+import zip_code_db_web_ui.domain.model.Prefecture;
 
 /**
  * 住所検索ページのヘルパー
  */
 public class ZipCodeHelper {
-    private final ConnectionInfoService cis;
-
-    public ZipCodeHelper() {
-        cis = new ConnectionInfoServiceImpl();
-    }
-
-    /**
-     * @param path DB の接続情報を記述した設定ファイルのパスを指定する。
-     * @return connectionInfo ConnectionInfo を返す。
-     * @throws Exception {@link java.lang.Exception}
-     */
-    private ConnectionInfo getConnectionInfo(String path) throws Exception {
-        final ContentsAttribute attr = new ContentsAttribute();
-        attr.setPath(path);
-
-        final ConnectionInfo connectionInfo = cis.getConnectionInfo(attr);
-        return connectionInfo;
-    }
-
-    /**
-     * @param path DB の接続情報を記述した設定ファイルのパスを指定する。
-     * @return prefectureService PrefectureService を返す。
-     * @throws Exception {@link java.lang.Exception}
-     */
-    public PrefecturesService getPrefecturesService(String path) throws Exception {
-        final PrefecturesService ps = new PrefecturesServiceImpl(getConnectionInfo(path));
-        return ps;
-    }
-
-    /**
-     * @param path DB の接続情報を記述した設定ファイルのパスを指定する。
-     * @return zipCodeService ZipCodeService を返す。
-     * @throws Exception {@link java.lang.Exception}
-     */
-    public ZipCodeService getZipCodeService(String path) throws Exception {
-        final ZipCodeService zcs = new ZipCodeServiceImpl(getConnectionInfo(path));
-        return zcs;
-    }
-
     /**
      * 住所検索ページから送信されたリクエストパラメータを受け取り、 ZipCodeForm に変換して返す。
      *
-     * @param request 住所検索ページから送信されたリクエストを受け取る。
+     * @param request
+     *            住所検索ページから送信されたリクエストを受け取る。
      * @return form ZipCodeForm を返す。
      */
     public ZipCodeForm convertToZipCodeForm(HttpServletRequest request) {
@@ -75,7 +33,8 @@ public class ZipCodeHelper {
     /**
      * 住所検索ページから送信されたリクエストパラメータを受け取り、 ZipCode に変換して返す。
      *
-     * @param request 住所検索ページから送信されたリクエストを受け取る。
+     * @param request
+     *            住所検索ページから送信されたリクエストを受け取る。
      * @return zipcode ZipCode を返す。
      */
     public ZipCode convertToZipCode(HttpServletRequest request) {
@@ -87,5 +46,32 @@ public class ZipCodeHelper {
         zipcode.setArea(request.getParameter("area"));
 
         return zipcode;
+    }
+
+    /**
+     * 都道府県名の一覧をセレクトボックスのオプションリスト用データに変換して返す。
+     * 
+     * @param recordset
+     *            変換対象とする都道府県の一覧を指定する。
+     * @param prefecture
+     *            セレクトボックス上で現在選択されている都道府県の名前を指定する。
+     * @return prefectures 変換されたオプションリストデータを返す。
+     */
+    public List<Prefecture> convertToPrefectures(List<String> recordset, String prefecture) {
+        final List<Prefecture> resultset = new ArrayList<>();
+
+        for (final String record : recordset) {
+            final Prefecture item = new Prefecture();
+            item.setLabel(record);
+            item.setValue(record);
+
+            if (record.equals(prefecture)) {
+                item.setSelected(true);
+            }
+
+            resultset.add(item);
+        }
+
+        return resultset;
     }
 }
