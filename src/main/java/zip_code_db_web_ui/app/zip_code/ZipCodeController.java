@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import zip_code_db_web_ui.domain.model.Prefecture;
-import zip_code_db_web_ui.domain.service.prefectures.PrefecturesService;
+import zip_code_db_web_ui.domain.service.zip_code.ZipCodeService;
+import zip_code_db_web_ui.domain.service.zip_code.ZipCodeServiceImpl;
 
 /**
  * 住所検索フォームのコントローラ
@@ -22,44 +23,47 @@ public class ZipCodeController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private final ZipCodeHelper helper;
-    private final PrefecturesService service;
+    private final ZipCodeService service;
 
     /**
      * @see HttpServlet#HttpServlet()
-     * @throws Exception {@link java.lang.Exception}
+     * @throws Exception
+     *             {@link java.lang.Exception}
      */
     public ZipCodeController() throws Exception {
         super();
         helper = new ZipCodeHelper();
-        service = helper.getPrefecturesService("WebContent/WEB-INF/classes/connection.properties");
+        service = new ZipCodeServiceImpl();
     }
 
     /**
      * 住所検索フォームを表示する。
      *
-     * @param request  {@link javax.servlet.http.HttpServletRequest}
-     * @param response 住所検索フォームを表示する。
-     * @throws ServletException {@link javax.servlet.ServletException}
-     * @throws IOException      {@link java.io.IOException}
+     * @param request
+     *            {@link javax.servlet.http.HttpServletRequest}
+     * @param response
+     *            住所検索フォームを表示する。
+     * @throws ServletException
+     *             {@link javax.servlet.ServletException}
+     * @throws IOException
+     *             {@link java.io.IOException}
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
      *      response)
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String prefecture = null;
+        final List<String> recordset = service.findPrefectureAll();
         final ZipCodeForm form = (ZipCodeForm) request.getAttribute("form");
+
+        String prefecture = null;
 
         if (form != null) {
             prefecture = form.getPrefecture();
         }
 
-        try {
-            final List<Prefecture> prefectures = service.getPrefectures(prefecture);
-            request.setAttribute("prefectures", prefectures);
-        } catch (final Exception e) {
-            throw new IOException(e);
-        }
+        final List<Prefecture> prefectures = helper.convertToPrefectures(recordset, prefecture);
+        request.setAttribute("prefectures", prefectures);
 
         final ServletContext context = getServletContext();
         final RequestDispatcher dispatcher = context.getRequestDispatcher("/index.jsp");
