@@ -45,8 +45,9 @@ dependencies {
     compile group: 'javax.servlet.jsp.jstl', name: 'jstl', version: '1.2'
     compile group: 'javax.servlet.jsp.jstl', name: 'javax.servlet.jsp.jstl-api', version: '1.2.2'
     
+    compile group: 'org.mybatis', name: 'mybatis', version: '3.5.3'
     compile 'com.github.JhonnyBravo:zip-code-db-cli:master-SNAPSHOT'
-    
+
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
 }
