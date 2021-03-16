@@ -1,7 +1,7 @@
 package zip_code_db_web_ui.app.zip_code;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 public class ConditionsNotNullValidator implements ConstraintValidator<ConditionsNotNull, Object> {
     private String field;
