@@ -1,7 +1,8 @@
 package zip_code_db_web_ui.domain.repository.zip_code;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+
+import static org.hamcrest.CoreMatchers.is;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +26,7 @@ public class ZipCodeRepositoryTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            factory = new SqlSessionFactoryBuilder()
-                    .build(Resources.getResourceAsStream("mybatis-config.xml"));
+            factory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream("mybatis-config.xml"));
         }
 
         @Test
@@ -39,7 +39,7 @@ public class ZipCodeRepositoryTest {
                 recordset = repository.find(zipcode);
             }
 
-            assertThat(recordset.size(), is(124329));
+            assertThat(recordset.size(), is(124568));
         }
 
         @Test
@@ -61,8 +61,7 @@ public class ZipCodeRepositoryTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            factory = new SqlSessionFactoryBuilder()
-                    .build(Resources.getResourceAsStream("mybatis-config.xml"));
+            factory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream("mybatis-config.xml"));
         }
 
         @Test
@@ -92,7 +91,7 @@ public class ZipCodeRepositoryTest {
                 recordset = repository.find(zipcode);
             }
 
-            assertThat(recordset.size(), is(8248));
+            assertThat(recordset.size(), is(8252));
         }
 
         @Test
@@ -132,8 +131,7 @@ public class ZipCodeRepositoryTest {
 
         @BeforeClass
         public static void setUp() throws Exception {
-            factory = new SqlSessionFactoryBuilder()
-                    .build(Resources.getResourceAsStream("mybatis-config.xml"));
+            factory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream("mybatis-config.xml"));
         }
 
         @Test
