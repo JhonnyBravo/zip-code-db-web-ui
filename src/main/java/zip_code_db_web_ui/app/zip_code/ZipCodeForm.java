@@ -2,8 +2,8 @@ package zip_code_db_web_ui.app.zip_code;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @ConditionsNotNull(field = "conditions")
 public class ZipCodeForm implements Serializable {
