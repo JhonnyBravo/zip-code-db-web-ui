@@ -125,3 +125,4 @@ $RECYCLE.BIN/
 
 # Docker
 mysql/data
+tomcat/data
