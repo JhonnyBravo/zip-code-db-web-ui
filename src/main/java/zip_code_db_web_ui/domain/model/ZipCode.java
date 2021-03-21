@@ -1,4 +1,4 @@
-package zip_code_db_web_ui;
+package zip_code_db_web_ui.domain.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
