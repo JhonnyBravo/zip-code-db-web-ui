@@ -1,9 +1,11 @@
-package zip_code_db_web_ui;
+package zip_code_db_web_ui.domain.repository.zip_code;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import zip_code_db_web_ui.domain.model.ZipCode;
 
 /**
  * レコード検索用メソッドを管理する。
