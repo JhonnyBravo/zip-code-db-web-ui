@@ -59,3 +59,6 @@ local.properties
 *.xls
 *.xlsx
 *.xlsm
+
+### Docker
+mysql/data
