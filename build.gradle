@@ -49,7 +49,7 @@ dependencies {
     compile 'com.github.JhonnyBravo:zip-code-db-cli:master-SNAPSHOT'
 
     // Use JUnit test framework
-    testCompile 'junit:junit:4.12'
+    testCompile 'junit:junit:4.13.2'
 }
 
 task sourcesJar(type: Jar,dependsOn: classes){
