@@ -52,6 +52,11 @@ dependencies {
     testCompile 'junit:junit:4.13.2'
 }
 
+tomcat {
+    httpProtocol='org.apache.coyote.http11.Http11Nio2Protocol'
+    ajpProtocol='org.apache.coyote.ajp.AjpNio2Protocol'
+}
+
 task sourcesJar(type: Jar,dependsOn: classes){
     classifier='sources'
     from sourceSets.main.allSource
