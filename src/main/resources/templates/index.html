@@ -15,12 +15,12 @@
 <body>
     <header>
         <nav class="navbar navbar-dark bg-dark">
-            <a class="navbar-brand" href="/">郵便番号検索</a>
+            <a class="navbar-brand" href="/zip-code-db-web-ui">郵便番号検索</a>
         </nav>
     </header>
 
     <section>
-        <form method="post" action="/search" th:object="${form}">
+        <form method="post" action="/zip-code-db-web-ui/search" th:object="${form}">
             <div class="form-row">
                 <div class="col">
                     <input type="text" class="form-control" placeholder="郵便番号" name="zipCode"
