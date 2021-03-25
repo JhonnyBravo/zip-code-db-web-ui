@@ -11,7 +11,7 @@
 apply{
     plugin 'java'
     plugin 'eclipse-wtp'
-    plugin 'maven'
+    plugin 'maven-publish'
     plugin 'war'
     plugin 'com.bmuschko.tomcat'
 }
