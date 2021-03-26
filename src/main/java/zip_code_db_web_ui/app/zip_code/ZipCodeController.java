@@ -24,7 +24,7 @@ public class ZipCodeController {
     ZipCodeService service;
 
     /**
-     * @param zipCode ZipCode エンティティを受取る。
+     * @param zipcode ZipCode エンティティを受取る。
      * @param mav     ModelAndView を受取る。
      * @return ModelAndView index.html を返す。
      */
