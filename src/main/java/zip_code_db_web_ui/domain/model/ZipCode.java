@@ -1,7 +1,6 @@
 package zip_code_db_web_ui.domain.model;
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,93 +15,113 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "t_zip_code")
 public class ZipCode implements Serializable {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column
-    @NotNull
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column
+  @NotNull
+  private Long id;
 
-    @Column(name = "zip_code", length = 7, nullable = false)
-    private String zipCode;
+  @Column(name = "zip_code", length = 7, nullable = false)
+  private String zipCode;
 
-    @Column(name = "prefecture", length = 10, nullable = false)
-    private String prefecture;
+  @Column(name = "prefecture", length = 10, nullable = false)
+  private String prefecture;
 
-    @Column(name = "city", length = 20, nullable = false)
-    private String city;
+  @Column(name = "city", length = 20, nullable = false)
+  private String city;
 
-    @Column(name = "area", length = 100, nullable = true)
-    private String area;
+  @Column(name = "area", length = 100, nullable = true)
+  private String area;
 
-    /**
-     * @return id レコード ID を返す。
-     */
-    public Long getId() {
-        return id;
-    }
+  /**
+   * レコード ID を返す。
+   *
+   * @return id レコード ID
+   */
+  public Long getId() {
+    return id;
+  }
 
-    /**
-     * @param id レコード ID として設定する数値を指定する。
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
+  /**
+   * レコード ID を設定する。
+   *
+   * @param id レコード ID として設定する数値
+   */
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    /**
-     * @return zipCode 郵便番号を返す。
-     */
-    public String getZipCode() {
-        return zipCode;
-    }
+  /**
+   * 郵便番号を返す。
+   *
+   * @return zipCode 郵便番号
+   */
+  public String getZipCode() {
+    return zipCode;
+  }
 
-    /**
-     * @param zipCode 郵便番号として設定する 7 桁の数列。
-     */
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
+  /**
+   * 郵便番号を設定する。
+   *
+   * @param zipCode 郵便番号として設定する 7 桁の数列。
+   */
+  public void setZipCode(String zipCode) {
+    this.zipCode = zipCode;
+  }
 
-    /**
-     * @return prefecture 都道府県名を返す。
-     */
-    public String getPrefecture() {
-        return prefecture;
-    }
+  /**
+   * 都道府県名を返す。
+   *
+   * @return prefecture 都道府県名
+   */
+  public String getPrefecture() {
+    return prefecture;
+  }
 
-    /**
-     * @param prefecture 都道府県名として設定する文字列を指定する。
-     */
-    public void setPrefecture(String prefecture) {
-        this.prefecture = prefecture;
-    }
+  /**
+   * 都道府県名を設定する。
+   *
+   * @param prefecture 都道府県名として設定する文字列
+   */
+  public void setPrefecture(String prefecture) {
+    this.prefecture = prefecture;
+  }
 
-    /**
-     * @return city 市区町村名を返す。
-     */
-    public String getCity() {
-        return city;
-    }
+  /**
+   * 市区郡名を返す。
+   *
+   * @return city 市区郡名
+   */
+  public String getCity() {
+    return city;
+  }
 
-    /**
-     * @param city 市区町村名として設定する文字列を指定する。
-     */
-    public void setCity(String city) {
-        this.city = city;
-    }
+  /**
+   * 市区郡名を設定する。
+   *
+   * @param city 市区郡名として設定する文字列を指定する。
+   */
+  public void setCity(String city) {
+    this.city = city;
+  }
 
-    /**
-     * @return area 町域名を返す。
-     */
-    public String getArea() {
-        return area;
-    }
+  /**
+   * 町域名を返す。
+   *
+   * @return area 町域名
+   */
+  public String getArea() {
+    return area;
+  }
 
-    /**
-     * @param area 町域名として設定する文字列を指定する。
-     */
-    public void setArea(String area) {
-        this.area = area;
-    }
+  /**
+   * 町域名を設定する。
+   *
+   * @param area 町域名として設定する文字列
+   */
+  public void setArea(String area) {
+    this.area = area;
+  }
 }
