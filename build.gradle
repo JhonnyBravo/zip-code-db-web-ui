@@ -10,12 +10,16 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'maven-publish'
-apply plugin: 'war'
+apply {
+    plugin 'java'
+    plugin 'eclipse'
+    plugin 'org.springframework.boot'
+    plugin 'io.spring.dependency-management'
+    plugin 'maven-publish'
+    plugin 'war'
+    plugin 'checkstyle'
+    plugin 'pmd'
+}
 
 group = 'com.github.JhonnyBravo'
 sourceCompatibility = 1.8
@@ -56,6 +60,17 @@ artifacts{
 javadoc{
     options.charSet='UTF-8'
     options.encoding='UTF-8'
+}
+
+checkstyle {
+    toolVersion='8.41.1'
+}
+
+pmd {
+    toolVersion='6.33.0'
+    ignoreFailures=true
+    ruleSetFiles=files("config/pmd/custom-java.xml")
+    ruleSets=[]
 }
 
 tasks.withType(JavaCompile){
