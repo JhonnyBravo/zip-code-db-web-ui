@@ -231,4 +231,17 @@ public class ZipCodeServiceTest {
     assertThat(recordset.get(0).getCity(), is("札幌市中央区"));
     assertThat(recordset.get(0).getArea(), is("大通東"));
   }
+
+  /**
+   * {@link ZipCodeService#findPrefectureAll()} 実行時に都道府県名の一覧を取得できること。
+   */
+  @Test
+  public void test14() throws Exception {
+    final List<String> recordset = service.findPrefectureAll();
+    assertThat(recordset.size(), is(47));
+
+    recordset.forEach(record -> {
+      System.out.println(record);
+    });
+  }
 }
