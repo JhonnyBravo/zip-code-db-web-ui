@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import zip_code_db_web_ui.domain.model.ZipCode;
 
@@ -95,6 +96,16 @@ public class ZipCodeRepositoryImpl implements ZipCodeRepository {
     }
 
     final List<ZipCode> recordset = query.getResultList();
+    return recordset;
+  }
+
+  @Override
+  public List<String> findPrefectureAll() throws Exception {
+    final String sql = "SELECT prefectures.prefecture FROM ("
+        + "SELECT DISTINCT prefecture, prefecture_phonetic FROM t_zip_code ORDER BY prefecture_phonetic"
+        + ") AS prefectures";
+    final Query query = manager.createNativeQuery(sql);
+    final List<String> recordset = query.getResultList();
     return recordset;
   }
 }
