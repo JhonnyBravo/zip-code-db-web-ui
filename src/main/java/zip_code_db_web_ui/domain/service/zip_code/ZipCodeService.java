@@ -14,4 +14,11 @@ public interface ZipCodeService {
    * @return recordset 条件に該当するレコードを取得する。
    */
   List<ZipCode> find(ZipCode zipcode) throws Exception;
+
+  /**
+   * 都道府県名の一覧を返す。
+   *
+   * @return recordset 都道県名の一覧を取得する。
+   */
+  List<String> findPrefectureAll() throws Exception;
 }
