@@ -14,4 +14,10 @@ public class ZipCodeServiceImpl implements ZipCodeService {
     final List<ZipCode> recordset = repository.find(zipcode);
     return recordset;
   }
+
+  @Override
+  public List<String> findPrefectureAll() throws Exception {
+    final List<String> recordset = repository.findPrefectureAll();
+    return recordset;
+  }
 }
