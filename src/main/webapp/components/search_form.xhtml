@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+<head>
+    <title>search_form</title>
+</head>
+
+<body>
+    <ui:composition>
+        <h:form>
+            <h:panelGroup layout="block" styleClass="form-row">
+                <h:panelGroup layout="block" styleClass="col">
+                    <h:inputText id="zipCode" styleClass="form-control" value="#{zipCodeForm.zipCode}" title="郵便番号">
+                        <f:validateBean validationGroups="zip_code_db_web_ui.app.zip_code.ZipCodeFormValidator" />
+                    </h:inputText>
+                    <h:message for="zipCode" errorClass="error" />
+                </h:panelGroup>
+                <h:panelGroup layout="block" styleClass="col">
+                    <h:selectOneMenu styleClass="form-control" value="#{zipCodeForm.prefecture}" title="都道府県名">
+                        <f:selectItems value="#{zipCodeForm.prefectures}" />
+                        <f:validateBean validationGroups="zip_code_db_web_ui.app.zip_code.ZipCodeFormValidator" />
+                    </h:selectOneMenu>
+                </h:panelGroup>
+                <h:panelGroup layout="block" styleClass="col">
+                    <h:inputText id="city" styleClass="form-control" value="#{zipCodeForm.city}" title="市区郡名">
+                        <f:validateBean validationGroups="zip_code_db_web_ui.app.zip_code.ZipCodeFormValidator" />
+                    </h:inputText>
+                    <h:message for="city" errorClass="error" />
+                </h:panelGroup>
+                <h:panelGroup layout="block" styleClass="col">
+                    <h:inputText id="area" styleClass="form-control" value="#{zipCodeForm.area}" title="町域名">
+                        <f:validateBean validationGroups="zip_code_db_web_ui.app.zip_code.ZipCodeFormValidator" />
+                    </h:inputText>
+                    <h:message for="area" errorClass="error" />
+                </h:panelGroup>
+                <h:panelGroup layout="block" styleClass="col">
+                    <h:commandButton type="submit" styleClass="btn btn-primary" value="検索" action="#{zipCodeForm.next()}" />
+                </h:panelGroup>
+            </h:panelGroup>
+            <f:validateWholeBean id="zipCodeFormValidator" value="#{zipCodeForm}" validationGroups="zip_code_db_web_ui.app.zip_code.ZipCodeFormValidator" />
+            <h:message for="zipCodeFormValidator" styleClass="error" />
+        </h:form>
+        <c:if test="#{zipCodeForm.error != null}">
+            <p class="error">
+                <h:outputText value="#{zipCodeForm.error}" />
+            </p>
+        </c:if>
+    </ui:composition>
+</body>
+
+</html>
