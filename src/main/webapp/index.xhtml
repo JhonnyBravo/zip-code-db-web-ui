@@ -1,69 +1,19 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
-<h:head>
-    <!-- Required meta tags -->
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
-    <h:outputStylesheet name="index.css" library="css" />
+<head>
+    <title>index</title>
+</head>
 
-    <title>郵便番号検索</title>
-</h:head>
-<h:body>
-    <header>
-        <nav class="navbar navbar-dark bg-dark">
-            <h:link styleClass="navbar-brand" outcome="index">郵便番号検索</h:link>
-        </nav>
-    </header>
-    <section>
-        <h:form>
-            <h:panelGroup layout="block" styleClass="form-row">
-                <h:panelGroup layout="block" styleClass="col">
-                    <h:inputText id="zipCode" styleClass="form-control" value="#{zipCodeForm.zipCode}" title="郵便番号">
-                        <f:validateBean validationGroups="zip_code_db_web_ui.app.zip_code.ZipCodeFormValidator" />
-                    </h:inputText>
-                    <h:message for="zipCode" errorClass="error" />
-                </h:panelGroup>
-                <h:panelGroup layout="block" styleClass="col">
-                    <h:selectOneMenu styleClass="form-control" value="#{zipCodeForm.prefecture}" title="都道府県名">
-                        <f:selectItems value="#{zipCodeForm.prefectures}" />
-                        <f:validateBean validationGroups="zip_code_db_web_ui.app.zip_code.ZipCodeFormValidator" />
-                    </h:selectOneMenu>
-                </h:panelGroup>
-                <h:panelGroup layout="block" styleClass="col">
-                    <h:inputText id="city" styleClass="form-control" value="#{zipCodeForm.city}" title="市区郡名">
-                        <f:validateBean validationGroups="zip_code_db_web_ui.app.zip_code.ZipCodeFormValidator" />
-                    </h:inputText>
-                    <h:message for="city" errorClass="error" />
-                </h:panelGroup>
-                <h:panelGroup layout="block" styleClass="col">
-                    <h:inputText id="area" styleClass="form-control" value="#{zipCodeForm.area}" title="町域名">
-                        <f:validateBean validationGroups="zip_code_db_web_ui.app.zip_code.ZipCodeFormValidator" />
-                    </h:inputText>
-                    <h:message for="area" errorClass="error" />
-                </h:panelGroup>
-                <h:panelGroup layout="block" styleClass="col">
-                    <h:commandButton type="submit" styleClass="btn btn-primary" value="検索" action="#{zipCodeForm.next()}" />
-                </h:panelGroup>
-            </h:panelGroup>
-            <f:validateWholeBean id="zipCodeFormValidator" value="#{zipCodeForm}" validationGroups="zip_code_db_web_ui.app.zip_code.ZipCodeFormValidator" />
-            <h:message for="zipCodeFormValidator" styleClass="error" />
-        </h:form>
-        <c:if test="#{zipCodeForm.error != null}">
-            <p class="error">
-                <h:outputText value="#{zipCodeForm.error}" />
-            </p>
-        </c:if>
-    </section>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-</h:body>
+<body>
+    <ui:composition template="/layouts/layout.xhtml">
+        <ui:define name="title">郵便番号検索</ui:define>
+        <ui:define name="content">
+            <ui:include src="/components/search_form.xhtml" />
+        </ui:define>
+    </ui:composition>
+</body>
 
 </html>
