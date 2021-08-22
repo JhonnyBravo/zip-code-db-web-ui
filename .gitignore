@@ -132,6 +132,7 @@ $RECYCLE.BIN/
 
 # Docker
 mysql/data
+payara/data
 
 # Maven
 target/
