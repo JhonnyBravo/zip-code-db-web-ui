@@ -192,10 +192,10 @@
     </reporting>
     <dependencies>
         <dependency>
-            <groupId>jakarta.platform</groupId>
-            <artifactId>jakarta.jakartaee-api</artifactId>
+            <groupId>fish.payara.extras</groupId>
+            <artifactId>payara-embedded-all</artifactId>
+            <version>5.2021.5</version>
             <scope>provided</scope>
-            <version>8.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
