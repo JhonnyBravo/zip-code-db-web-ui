@@ -4,19 +4,28 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.List;
 import javax.inject.Inject;
-import org.jboss.weld.junit4.WeldInitiator;
-import org.junit.Rule;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import zip_code_db_web_ui.domain.model.ZipCode;
-import zip_code_db_web_ui.domain.repository.zip_code.ZipCodeRepositoryImpl;
 
+@RunWith(Arquillian.class)
 public class ZipCodeServiceTest {
   @Inject
   private ZipCodeService service;
 
-  @Rule
-  public WeldInitiator weld = WeldInitiator
-      .from(ZipCodeRepositoryImpl.class, ZipCodeServiceImpl.class).inject(this).build();
+  @Deployment
+  public static JavaArchive createDeployment() {
+    final JavaArchive jar =
+        ShrinkWrap.create(JavaArchive.class).addPackages(true, "zip_code_db_web_ui")
+            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+    System.out.println(jar.toString(true));
+    return jar;
+  }
 
   // パラメータ指定なしの場合
   /**
