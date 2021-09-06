@@ -6,21 +6,26 @@ import java.util.function.Predicate;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import zip_code_db_web_ui.app.zip_code.Config;
 import zip_code_db_web_ui.domain.model.ZipCode;
 
 @Stateless
 public class ZipCodeRepositoryImpl implements ZipCodeRepository {
+  @Inject
+  @Config("unitName")
+  private String unitName;
   private EntityManagerFactory factory;
   private EntityManager manager;
 
   @PostConstruct
   private void init() {
-    this.factory = Persistence.createEntityManagerFactory("zip_code_db_web_ui");
+    this.factory = Persistence.createEntityManagerFactory(unitName);
     this.manager = factory.createEntityManager();
   }
 
