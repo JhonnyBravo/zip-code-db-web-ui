@@ -7,18 +7,19 @@
  */
 
 // Apply the java-library plugin to add support for Java Library
-//apply plugin: 'java-library'
-apply{
-    plugin 'java'
-    plugin 'eclipse-wtp'
-    plugin 'maven-publish'
-    plugin 'war'
-    plugin 'com.bmuschko.tomcat'
-    plugin 'checkstyle'
-    plugin 'pmd'
+plugins {
+    id 'java-library'
+    id 'eclipse-wtp'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'maven-publish'
+    id 'war'
+    id 'com.bmuschko.tomcat' version '2.5'
+    id 'checkstyle'
+    id 'pmd'
 }
 
 group='com.github.JhonnyBravo'
+version='MyBatis-SNAPSHOT'
 sourceCompatibility=1.8
 targetCompatibility=1.8
 
@@ -31,27 +32,46 @@ repositories {
     maven{url 'https://jitpack.io'}
 }
 
+dependencyManagement {
+    dependencies {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '8.5.2'){
+            entry 'tomcat-embed-core'
+            entry 'tomcat-embed-logging-juli'
+            entry 'tomcat-embed-jasper'
+        }
+
+        dependencySet(group: 'org.apache.tomcat', version: '8.5.2'){
+            entry 'tomcat-servlet-api'
+            entry 'tomcat-jsp-api'
+        }
+
+        dependency 'taglibs:standard:1.1.2'
+        dependency 'javax.servlet.jsp.jstl:jstl:1.2'
+        dependency 'javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api:1.2.2'
+        dependency 'org.mybatis:mybatis:3.5.6'
+        dependency 'junit:junit:4.13.2'
+    }
+}
+
 dependencies {
     // Tomcat
-    def tomcatVersion='8.5.2'
-
-    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
-           "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
-           "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core",
+           "org.apache.tomcat.embed:tomcat-embed-logging-juli",
+           "org.apache.tomcat.embed:tomcat-embed-jasper"
 
     implementation fileTree(dir: "WebContent/WEB-INF/lib", include: '*.jar')
-    implementation "org.apache.tomcat:tomcat-servlet-api:${tomcatVersion}"
-    implementation "org.apache.tomcat:tomcat-jsp-api:${tomcatVersion}"
+    implementation "org.apache.tomcat:tomcat-servlet-api"
+    implementation "org.apache.tomcat:tomcat-jsp-api"
 
-    implementation group: 'taglibs', name: 'standard', version: '1.1.2'
-    implementation group: 'javax.servlet.jsp.jstl', name: 'jstl', version: '1.2'
-    implementation group: 'javax.servlet.jsp.jstl', name: 'javax.servlet.jsp.jstl-api', version: '1.2.2'
-    
-    implementation group: 'org.mybatis', name: 'mybatis', version: '3.5.6'
+    implementation 'taglibs:standard'
+    implementation 'javax.servlet.jsp.jstl:jstl'
+    implementation 'javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api'
+
+    implementation 'org.mybatis:mybatis'
     implementation 'com.github.JhonnyBravo:zip-code-db-cli:master-SNAPSHOT'
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'junit:junit'
 }
 
 tomcat {
@@ -74,6 +94,40 @@ artifacts{
     archives javadocJar
 }
 
+java{
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing{
+    publications{
+        mavenJava(MavenPublication){
+            artifactId='zip-code-db-web-ui'
+            from components.java
+            versionMapping{
+                usage('java-api'){
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime'){
+                    fromResolutionResult()
+                }
+            }
+            pom{
+                name='zip-code-db-web-ui'
+                description='Java 版 郵便番号検索 DB'
+                url='https://github.com/JhonnyBravo/zip-code-db-web-ui'
+            }
+        }
+    }
+    repositories{
+        maven{
+            def releasesRepoUrl=layout.buildDirectory.dir('repos/releases')
+            def snapshotsRepoUrl=layout.buildDirectory.dir('repos/snapshots')
+            url=version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}
+
 javadoc{
     options.charSet='UTF-8'
     options.encoding='UTF-8'
@@ -94,16 +148,6 @@ tasks.withType(JavaCompile){
     options.encoding='UTF-8'
 }
 
-buildscript {
-    repositories {
-        maven {url "https://plugins.gradle.org/m2/"}
-    }
-
-    dependencies {
-        classpath "com.bmuschko:gradle-tomcat-plugin:2.5"
-    }
-}
-
 project.webAppDirName = 'WebContent'
 
 sourceSets {
@@ -116,7 +160,7 @@ sourceSets {
             srcDir 'src/main/resources'
         }
     }
-    
+
     test {
         java {
             srcDir 'src/test/java'
@@ -132,4 +176,3 @@ war {
     exclude 'WEB-INF/lib/**'
     exclude 'WEB-INF/classes/**'
 }
- 
