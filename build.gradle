@@ -1,27 +1,16 @@
-buildscript {
-    ext {
-        springBootVersion = '2.4.5'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
-}
-
-apply {
-    plugin 'java'
-    plugin 'eclipse'
-    plugin 'org.springframework.boot'
-    plugin 'io.spring.dependency-management'
-    plugin 'maven-publish'
-    plugin 'war'
-    plugin 'checkstyle'
-    plugin 'pmd'
+plugins {
+    id 'java-library'
+    id 'eclipse'
+    id 'org.springframework.boot' version '2.4.5'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'maven-publish'
+    id 'war'
+    id 'checkstyle'
+    id 'pmd'
 }
 
 group = 'com.github.JhonnyBravo'
+version = 'SpringJDBC-SNAPSHOT'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -29,6 +18,13 @@ repositories {
     jcenter()
     mavenCentral()
     maven{ url 'https://jitpack.io'}
+}
+
+dependencyManagement {
+    dependencies {
+        dependency 'mysql:mysql-connector-java:8.0.22'
+        dependency 'junit:junit:4.13.2'
+    }
 }
 
 dependencies {
@@ -39,7 +35,7 @@ dependencies {
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     runtimeOnly 'mysql:mysql-connector-java'
     testImplementation('org.springframework.boot:spring-boot-starter-test')
-    testImplementation ('junit:junit:4.13.2')
+    testImplementation ('junit:junit')
 }
 
 task sourcesJar(type: Jar,dependsOn: classes){
@@ -55,6 +51,41 @@ task javadocJar(type: Jar,dependsOn: javadoc){
 artifacts{
     archives sourcesJar
     archives javadocJar
+}
+
+java{
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing{
+    publications{
+        bootJava(MavenPublication){
+            artifact bootJar
+            artifactId='zip-code-db-web-ui'
+            from components.java
+            versionMapping{
+                usage('java-api'){
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime'){
+                    fromResolutionResult()
+                }
+            }
+            pom{
+                name='zip-code-db-web-ui'
+                description='Java 版 郵便番号検索 DB'
+                url='https://github.com/JhonnyBravo/zip-code-db-web-ui'
+            }
+        }
+    }
+    repositories{
+        maven{
+            def releasesRepoUrl=layout.buildDirectory.dir('repos/releases')
+            def snapshotsRepoUrl=layout.buildDirectory.dir('repos/snapshots')
+            url=version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
 }
 
 javadoc{
