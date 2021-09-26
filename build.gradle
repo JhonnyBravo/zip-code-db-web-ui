@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'com.github.JhonnyBravo'
-version = 'SpringJDBC-SNAPSHOT'
+version = 'master-SNAPSHOT'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
