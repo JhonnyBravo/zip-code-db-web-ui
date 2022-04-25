@@ -22,7 +22,7 @@ repositories {
 
 dependencyManagement {
     dependencies {
-        dependency 'mysql:mysql-connector-java:8.0.22'
+        dependency 'mysql:mysql-connector-java:8.0.29'
         dependency 'junit:junit:4.13.2'
     }
 }
